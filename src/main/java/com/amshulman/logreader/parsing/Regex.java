@@ -51,7 +51,7 @@ public final class Regex {
             "\\[NoCheatPlus\\] \\(CONSOLE\\) Kicked " + capturing(USERNAME) +
             ".*$");
 
-    static Pattern DATETIME_PATTERN = Pattern.compile("^.*" + capturing(DATETIME) + ".*$");
+    static Pattern DATETIME_PATTERN = Pattern.compile("^" + capturing(DATETIME) + ".*$");
 
     public static Stream<EventWithUsername> parseLine(String input) {
         Stream.Builder<EventWithUsername> builder = Stream.builder();
