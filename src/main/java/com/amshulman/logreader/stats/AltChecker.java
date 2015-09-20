@@ -41,6 +41,7 @@ public final class AltChecker {
 
     private List<String> findAlts(Stream<String> addresses) {
         return addresses.flatMap(playersByAddress::getPlayers)
+                        .distinct()
                         .sorted(String.CASE_INSENSITIVE_ORDER)
                         .collect(Collectors.toList());
     }
