@@ -46,7 +46,7 @@ public final class Main {
             params.getAlts()
                   .stream()
                   .sorted(String.CASE_INSENSITIVE_ORDER)
-                  .map(username -> username + ": " + altChecker.findAlts(username, false))
+                  .map(username -> username + ": " + altChecker.findAlts(username, params.excludedAlts, false))
                   .forEachOrdered(System.out::println);
         }
 
@@ -73,6 +73,7 @@ public final class Main {
 
         @Parameter List<String> paths = new ArrayList<>();
         @Parameter(names = { "-alt" }) List<String> alts = new ArrayList<>();
+        @Parameter(names = { "-excludeAlt" }) List<String> excludedAlts = new ArrayList<>();
         @Parameter(names = { "-playtime" }) List<String> playtime = new ArrayList<>();
 
         public static Parameters parse(String[] args) {

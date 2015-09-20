@@ -28,7 +28,7 @@ public final class AltChecker {
 
     }
 
-    public List<String> findAlts(String username, boolean fuzzyMatch) {
+    public List<String> findAlts(String username, List<String> excludedAlts, boolean fuzzyMatch) {
         Stream<String> addresses = addressesByPlayer.getAddresses(username)
                                                     .parallelStream();
 
@@ -36,10 +36,17 @@ public final class AltChecker {
             addresses = addresses.flatMap(AltChecker::expand);
         }
 
-        return addresses.flatMap(playersByAddress::getPlayers)
-                        .distinct()
-                        .sorted(String.CASE_INSENSITIVE_ORDER)
-                        .collect(Collectors.toList());
+        Stream<String> alts = addresses.flatMap(playersByAddress::getPlayers)
+                                       .distinct();
+
+        if (excludedAlts.contains(username)) {
+            alts = alts.filter(username::equals);
+        } else {
+            alts = alts.filter(name -> !excludedAlts.contains(name));
+        }
+
+        return alts.sorted(String.CASE_INSENSITIVE_ORDER)
+                   .collect(Collectors.toList());
     }
 
     private static Stream<String> expand(String ip) {
