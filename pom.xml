@@ -9,6 +9,8 @@
 	<name>LogReader</name>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
 		<guava.version>18.0</guava.version>
 		<trove.version>3.0.3</trove.version>
 		<jsr305.version>2.0.2</jsr305.version>
