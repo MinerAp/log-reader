@@ -13,7 +13,7 @@
 
 		<guava.version>18.0</guava.version>
 		<trove.version>3.0.3</trove.version>
-		<jsr305.version>2.0.2</jsr305.version>
+		<jcommander.version>1.48</jcommander.version>
 		<lombok.version>1.16.6</lombok.version>
 	</properties>
 
@@ -29,6 +29,11 @@
 			<artifactId>trove4j</artifactId>
 			<version>${trove.version}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>${jcommander.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>

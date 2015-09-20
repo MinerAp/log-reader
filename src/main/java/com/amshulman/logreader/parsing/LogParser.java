@@ -31,10 +31,10 @@ public final class LogParser {
 
     Path[] paths;
 
-    public LogParser(String... paths) {
-        this.paths = Arrays.stream(paths)
-                           .map(Paths::get)
-                           .toArray(Path[]::new);
+    public LogParser(List<String> paths) {
+        this.paths = paths.stream()
+                          .map(Paths::get)
+                          .toArray(Path[]::new);
     }
 
     public ListMultimap<String, Session> readLogs() {
