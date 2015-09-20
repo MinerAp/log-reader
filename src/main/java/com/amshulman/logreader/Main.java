@@ -46,7 +46,7 @@ public final class Main {
             params.getAlts()
                   .stream()
                   .sorted(String.CASE_INSENSITIVE_ORDER)
-                  .map(username -> username + ": " + altChecker.findAltsExact(username))
+                  .map(username -> username + ": " + altChecker.findAlts(username, false))
                   .forEachOrdered(System.out::println);
         }
 

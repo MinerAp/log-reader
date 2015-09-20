@@ -28,18 +28,14 @@ public final class AltChecker {
 
     }
 
-    public List<String> findAltsExact(String name) {
-        return findAlts(addressesByPlayer.getAddresses(name)
-                                    .parallelStream());
-    }
+    public List<String> findAlts(String username, boolean fuzzyMatch) {
+        Stream<String> addresses = addressesByPlayer.getAddresses(username)
+                                                    .parallelStream();
 
-    public List<String> findAltsFuzzy(String name) {
-        return findAlts(addressesByPlayer.getAddresses(name)
-                                    .parallelStream()
-                                    .flatMap(AltChecker::expand));
-    }
+        if (fuzzyMatch) {
+            addresses = addresses.flatMap(AltChecker::expand);
+        }
 
-    private List<String> findAlts(Stream<String> addresses) {
         return addresses.flatMap(playersByAddress::getPlayers)
                         .distinct()
                         .sorted(String.CASE_INSENSITIVE_ORDER)
