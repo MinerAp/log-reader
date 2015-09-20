@@ -29,20 +29,20 @@ public final class AltChecker {
     }
 
     public List<String> findAltsExact(String name) {
-        return addressesByPlayer.getAddresses(name)
-                                .parallelStream()
-                                .flatMap(playersByAddress::getPlayers)
-                                .sorted(String.CASE_INSENSITIVE_ORDER)
-                                .collect(Collectors.toList());
+        return findAlts(addressesByPlayer.getAddresses(name)
+                                    .parallelStream());
     }
 
     public List<String> findAltsFuzzy(String name) {
-        return addressesByPlayer.getAddresses(name)
-                                .parallelStream()
-                                .flatMap(AltChecker::expand)
-                                .flatMap(playersByAddress::getPlayers)
-                                .sorted(String.CASE_INSENSITIVE_ORDER)
-                                .collect(Collectors.toList());
+        return findAlts(addressesByPlayer.getAddresses(name)
+                                    .parallelStream()
+                                    .flatMap(AltChecker::expand));
+    }
+
+    private List<String> findAlts(Stream<String> addresses) {
+        return addresses.flatMap(playersByAddress::getPlayers)
+                        .sorted(String.CASE_INSENSITIVE_ORDER)
+                        .collect(Collectors.toList());
     }
 
     private static Stream<String> expand(String ip) {
