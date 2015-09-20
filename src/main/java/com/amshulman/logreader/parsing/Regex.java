@@ -23,11 +23,10 @@ public final class Regex {
     static String DATETIME = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
     static String INFO = "\\[INFO\\]";
     static String DOT = "\\.";
-    static String IPADDRESS =
-            noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
-                    noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
-                    noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
-                    noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]");
+    static String IPADDRESS = noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
+                              noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
+                              noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]") + DOT +
+                              noncapturing("[01]?\\d\\d?|2[0-4]\\d|25[0-5]");
     static String PORT = ":\\d{1,5}";
     static String USERNAME = "[a-zA-Z0-9_]{1,16}";
 
