@@ -39,7 +39,7 @@ public final class Regex {
     static Pattern FAILED_CONNECT_PATTERN = Pattern.compile("^" +
             capturing(DATETIME) + " " + INFO + " " +
             optional("Disconnecting ") + "com\\.mojang\\.authlib\\.GameProfile" +
-            ".*" + capturing(USERNAME) + ".*\\(/" + capturing(IPADDRESS) + PORT + "\\)" +
+            ".*name=" + capturing(USERNAME) + ".*\\(/" + capturing(IPADDRESS) + PORT + "\\)" +
             ".*$");
 
     static Pattern LOGOUT_PATTERN = Pattern.compile("^" +
