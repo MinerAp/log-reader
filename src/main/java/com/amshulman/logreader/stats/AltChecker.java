@@ -3,8 +3,10 @@ package com.amshulman.logreader.stats;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -12,9 +14,9 @@ import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
 import com.amshulman.logreader.state.Session;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.SetMultimap;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class AltChecker {
@@ -25,7 +27,6 @@ public final class AltChecker {
     public AltChecker(Multimap<String, Session> sessionsByUser) {
         playersByAddress = new AddressToPlayerMap(sessionsByUser);
         addressesByPlayer = new PlayerToAddressMap(sessionsByUser);
-
     }
 
     public List<String> findAlts(String username, List<String> excludedAlts, boolean fuzzyMatch) {
@@ -60,7 +61,7 @@ public final class AltChecker {
 
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
     private static class PlayerToAddressMap {
-        ListMultimap<String, String> addresses = ArrayListMultimap.create();
+        SetMultimap<String, String> addresses = HashMultimap.create();
 
         public PlayerToAddressMap(Multimap<String, Session> sessionsByUser) {
             sessionsByUser.entries()
@@ -68,14 +69,14 @@ public final class AltChecker {
                           .forEach(e -> addresses.put(e.getKey(), e.getValue().getIpAddress()));
         }
 
-        public List<String> getAddresses(String username) {
+        public Collection<String> getAddresses(String username) {
             return addresses.get(username);
         }
     }
 
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
     private static class AddressToPlayerMap {
-        TIntObjectMap<List<String>> users = new TIntObjectHashMap<>();
+        TIntObjectMap<Set<String>> users = new TIntObjectHashMap<>();
 
         public AddressToPlayerMap(Multimap<String, Session> sessionsByUser) {
             sessionsByUser.entries()
@@ -84,15 +85,15 @@ public final class AltChecker {
         }
 
         public Stream<String> getPlayers(String ip) {
-            List<String> players = users.get(convertAddressToInteger(ip));
+            Set<String> players = users.get(convertAddressToInteger(ip));
             return players == null ? Stream.empty() : players.stream();
         }
 
         private void addSessionToMap(String username, Session session) {
             int ip = convertAddressToInteger(session.getIpAddress());
-            List<String> players = users.get(ip);
+            Set<String> players = users.get(ip);
             if (players == null) {
-                players = new ArrayList<>();
+                players = new HashSet<>();
                 users.put(ip, players);
             }
             players.add(username);
