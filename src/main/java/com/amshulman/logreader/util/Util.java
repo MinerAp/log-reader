@@ -22,7 +22,7 @@ public final class Util {
         return sessionsByUser.get(username).stream().map(s -> new SessionWithUsername(username, s));
     }
 
-    public static String format(Duration duration) {
+    public static String formatDuration(Duration duration) {
         final long days = duration.toHours() / 24;
         final long hours = duration.toHours() % 24;
         final long minutes = duration.toMinutes() % 60;

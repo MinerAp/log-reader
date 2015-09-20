@@ -49,7 +49,7 @@ public final class Main {
             Playtime playtimeCalculator = new Playtime(sessionsByUser);
             System.out.println("====== Playtime ======");
             for (String username : params.getPlaytime()) {
-                String playtime = Util.format(playtimeCalculator.getPlaytime(username));
+                String playtime = Util.formatDuration(playtimeCalculator.getPlaytime(username));
                 System.out.println(username + ": " + playtime);
             }
         }
