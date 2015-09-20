@@ -1,11 +1,15 @@
 package com.amshulman.logreader;
 
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.javatuples.Pair;
 
 import com.amshulman.logreader.parsing.LogParser;
 import com.amshulman.logreader.state.Session;
@@ -39,19 +43,23 @@ public final class Main {
         if (!params.getAlts().isEmpty()) {
             AltChecker altChecker = new AltChecker(sessionsByUser);
             System.out.println("====== Alts ======");
-            for (String username : params.getAlts()) {
-                List<String> alts = altChecker.findAltsExact(username);
-                System.out.println(username + ": " + alts.toString());
-            }
+            params.getAlts()
+                  .stream()
+                  .sorted(String.CASE_INSENSITIVE_ORDER)
+                  .map(username -> username + ": " + altChecker.findAltsExact(username))
+                  .forEachOrdered(System.out::println);
         }
 
         if (!params.getPlaytime().isEmpty()) {
             Playtime playtimeCalculator = new Playtime(sessionsByUser);
             System.out.println("====== Playtime ======");
-            for (String username : params.getPlaytime()) {
-                String playtime = Util.formatDuration(playtimeCalculator.getPlaytime(username));
-                System.out.println(username + ": " + playtime);
-            }
+            params.getPlaytime()
+                  .stream()
+                  .map(username -> new Pair<String, Duration>(username,
+                                                              playtimeCalculator.getPlaytime(username)))
+                  .sorted(Comparator.comparing(Pair<String, Duration>::getValue1).reversed())
+                  .map(p -> p.getValue0() + ": " + Util.formatDuration(p.getValue1()))
+                  .forEachOrdered(System.out::println);
         }
 
 //        Analytics.run(sessionsByUser);
