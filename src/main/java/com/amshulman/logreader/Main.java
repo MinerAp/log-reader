@@ -15,6 +15,7 @@ import com.amshulman.logreader.parsing.LogParser;
 import com.amshulman.logreader.state.Session;
 import com.amshulman.logreader.stats.AltChecker;
 import com.amshulman.logreader.stats.Playtime;
+import com.amshulman.logreader.stats.IpAddressCounter;
 import com.amshulman.logreader.util.Util;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -50,6 +51,16 @@ public final class Main {
                   .forEachOrdered(System.out::println);
         }
 
+        if (!params.getIpCounts().isEmpty()) {
+            IpAddressCounter counter = new IpAddressCounter(sessionsByUser);
+            System.out.println("====== IP Address Counts ======");
+            params.getIpCounts()
+                  .stream()
+                  .sorted(String.CASE_INSENSITIVE_ORDER)
+                  .map(username -> username + ": " + counter.count(username))
+                  .forEachOrdered(System.out::println);
+        }
+
         if (!params.getPlaytime().isEmpty()) {
             Playtime playtimeCalculator = new Playtime(sessionsByUser);
             System.out.println("====== Playtime ======");
@@ -74,6 +85,7 @@ public final class Main {
         @Parameter List<String> paths = new ArrayList<>();
         @Parameter(names = { "-alt" }) List<String> alts = new ArrayList<>();
         @Parameter(names = { "-excludeAlt" }) List<String> excludedAlts = new ArrayList<>();
+        @Parameter(names = { "-ipCounts" }) List<String> ipCounts = new ArrayList<>();
         @Parameter(names = { "-playtime" }) List<String> playtime = new ArrayList<>();
 
         public static Parameters parse(String[] args) {
@@ -87,7 +99,7 @@ public final class Main {
         }
 
         public boolean hasCommand() {
-            return !(alts.isEmpty() && playtime.isEmpty());
+            return !(alts.isEmpty() && ipCounts.isEmpty() && playtime.isEmpty());
         }
     }
 }
