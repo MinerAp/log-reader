@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import com.amshulman.logreader.state.Event;
 import com.amshulman.logreader.state.Event.EventType;
 import com.amshulman.logreader.state.Event.EventWithUsername;
+import com.amshulman.logreader.state.IpAddress;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class Regex {
@@ -60,7 +61,7 @@ public final class Regex {
         // Check to see if the input matches any login pattern
         if ((matcher = LOGIN_PATTERN.matcher(input)).matches() ||
                 (matcher = FAILED_CONNECT_PATTERN.matcher(input)).matches()) {
-            Event event = new Event(parse(matcher.group(1)), matcher.group(3), EventType.LOGIN);
+            Event event = new Event(parse(matcher.group(1)), new IpAddress(matcher.group(3)), EventType.LOGIN);
             builder.accept(new EventWithUsername(matcher.group(2), event));
         }
 

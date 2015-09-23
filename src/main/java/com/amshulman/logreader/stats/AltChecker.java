@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
+import com.amshulman.logreader.state.IpAddress;
 import com.amshulman.logreader.state.Session;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -30,8 +31,8 @@ public final class AltChecker {
     }
 
     public List<String> findAlts(String username, List<String> excludedAlts, boolean fuzzyMatch) {
-        Stream<String> addresses = addressesByPlayer.getAddresses(username)
-                                                    .parallelStream();
+        Stream<IpAddress> addresses = addressesByPlayer.getAddresses(username)
+                                                       .parallelStream();
 
         if (fuzzyMatch) {
             addresses = addresses.flatMap(AltChecker::expand);
@@ -50,18 +51,19 @@ public final class AltChecker {
                    .collect(Collectors.toList());
     }
 
-    private static Stream<String> expand(String ip) {
-        String foo = ip.substring(0, ip.lastIndexOf('.') + 1);
-        Stream.Builder<String> bar = Stream.builder();
+    private static Stream<IpAddress> expand(IpAddress ip) {
+        String address = ip.toString();
+        String base = address.substring(0, address.lastIndexOf('.') + 1);
+        Stream.Builder<IpAddress> stream = Stream.builder();
         for (int i = 0; i < 256; ++i) {
-            bar.accept(foo + i);
+            stream.accept(new IpAddress(base + i));
         }
-        return bar.build();
+        return stream.build();
     }
 
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
     private static class PlayerToAddressMap {
-        SetMultimap<String, String> addresses = HashMultimap.create();
+        SetMultimap<String, IpAddress> addresses = HashMultimap.create();
 
         public PlayerToAddressMap(Multimap<String, Session> sessionsByUser) {
             sessionsByUser.entries()
@@ -69,7 +71,7 @@ public final class AltChecker {
                           .forEach(e -> addresses.put(e.getKey(), e.getValue().getIpAddress()));
         }
 
-        public Collection<String> getAddresses(String username) {
+        public Collection<IpAddress> getAddresses(String username) {
             return addresses.get(username);
         }
     }
@@ -84,38 +86,19 @@ public final class AltChecker {
                           .forEach(e -> addSessionToMap(e.getKey(), e.getValue()));
         }
 
-        public Stream<String> getPlayers(String ip) {
-            Set<String> players = users.get(convertAddressToInteger(ip));
+        public Stream<String> getPlayers(IpAddress ip) {
+            Set<String> players = users.get(ip.getAddress());
             return players == null ? Stream.empty() : players.stream();
         }
 
         private void addSessionToMap(String username, Session session) {
-            int ip = convertAddressToInteger(session.getIpAddress());
+            int ip = session.getIpAddress().getAddress();
             Set<String> players = users.get(ip);
             if (players == null) {
                 players = new HashSet<>();
                 users.put(ip, players);
             }
             players.add(username);
-        }
-
-        // Adapted from http://codereview.stackexchange.com/a/84461
-        private static int convertAddressToInteger(String ip) {
-            int len = ip.length();
-            int octet = 0;
-            int address = 0;
-
-            for (int i = 0; i < len; ++i) {
-                char digit = ip.charAt(i);
-                if (digit != '.') {
-                    octet = octet * 10 + (digit - '0');
-                } else {
-                    address = (address << 8) | octet;
-                    octet = 0;
-                }
-            }
-
-            return (address << 8) | octet;
         }
     }
 

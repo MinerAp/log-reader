@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 public final class Event {
     Instant time;
-    String ipAddress;
+    IpAddress ipAddress;
     EventType type;
 
     @Value

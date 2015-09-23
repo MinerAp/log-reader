@@ -10,7 +10,7 @@ import lombok.Value;
 public final class Session implements Comparable<Session> {
     Instant login;
     Instant logout;
-    String ipAddress;
+    IpAddress ipAddress;
 
     public Session(Event login, Event logout) {
         this(login, logout.getTime());
