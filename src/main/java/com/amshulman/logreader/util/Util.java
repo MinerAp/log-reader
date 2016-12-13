@@ -1,6 +1,9 @@
 package com.amshulman.logreader.util;
 
 import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -10,9 +13,13 @@ import com.amshulman.logreader.state.Session.SessionWithUsername;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public final class Util {
+
+    static DateTimeFormatter INSTANT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault());
 
     public static <T> Iterable<T> iterableFromStream(Stream<T> stream) {
         return stream::iterator;
@@ -20,6 +27,10 @@ public final class Util {
 
     public static Stream<SessionWithUsername> mapSessionsToUser(String username, Map<String, List<Session>> sessionsByUser) {
         return sessionsByUser.get(username).stream().map(s -> new SessionWithUsername(username, s));
+    }
+
+    public static String formatInstant(Instant instant) {
+        return INSTANT_FORMATTER.format(instant);
     }
 
     public static String formatDuration(Duration duration) {
