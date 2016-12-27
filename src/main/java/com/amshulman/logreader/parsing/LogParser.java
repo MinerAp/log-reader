@@ -37,10 +37,10 @@ public final class LogParser {
                           .toArray(Path[]::new);
     }
 
-    public ListMultimap<String, Session> readLogs() {
+    public ListMultimap<String, Session> readLogs(boolean recurse) {
         ListMultimap<String, Session> m = ArrayListMultimap.create();
         Arrays.stream(paths)
-              .flatMap(FileUtil::walk)
+              .flatMap(p -> FileUtil.walk(p, recurse))
               .flatMap(LogParser::processLinesInOrder)
               .sequential()
               .forEach(s -> m.put(s.getUsername(), s.getSession()));

@@ -39,7 +39,7 @@ public final class Main {
         }
 
         LogParser parser = new LogParser(params.getPaths());
-        ListMultimap<String, Session> sessionsByUser = parser.readLogs();
+        ListMultimap<String, Session> sessionsByUser = parser.readLogs(params.recurse);
 
         if (!params.getAlts().isEmpty()) {
             AltChecker altChecker = new AltChecker(sessionsByUser);
@@ -87,6 +87,7 @@ public final class Main {
         @Parameter(names = { "-excludeAlt" }) List<String> excludedAlts = new ArrayList<>();
         @Parameter(names = { "-ipCounts" }) List<String> ipCounts = new ArrayList<>();
         @Parameter(names = { "-playtime" }) List<String> playtime = new ArrayList<>();
+        @Parameter(names = { "-recurse"}, arity = 1) boolean recurse = true;
 
         public static Parameters parse(String[] args) {
             Parameters params = new Parameters();
