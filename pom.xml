@@ -5,7 +5,7 @@
 
 	<groupId>com.amshulman</groupId>
 	<artifactId>logreader</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 	<name>LogReader</name>
 
 	<properties>
