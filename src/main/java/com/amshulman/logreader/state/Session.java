@@ -1,6 +1,6 @@
 package com.amshulman.logreader.state;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
@@ -8,15 +8,15 @@ import lombok.Value;
 @Value
 @EqualsAndHashCode(of = { "login", "logout" })
 public final class Session implements Comparable<Session> {
-    Instant login;
-    Instant logout;
+    ZonedDateTime login;
+    ZonedDateTime logout;
     IpAddress ipAddress;
 
     public Session(Event login, Event logout) {
         this(login, logout.getTime());
     }
 
-    public Session(Event login, Instant logout) {
+    public Session(Event login, ZonedDateTime logout) {
         this.login = login.getTime();
         this.logout = logout;
         ipAddress = login.getIpAddress();

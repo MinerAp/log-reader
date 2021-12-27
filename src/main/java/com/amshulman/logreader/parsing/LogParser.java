@@ -4,7 +4,7 @@ import static com.amshulman.logreader.Main.DEBUG;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,10 +54,10 @@ public final class LogParser {
                                                       Collectors.mapping(EventWithUsername::getEvent, Collectors.toList())))
                        .entrySet()
                        .parallelStream()
-                       .flatMap(e -> convertEventsToSessions(e.getKey(), e.getValue(), fileParser.getLastInstant()));
+                       .flatMap(e -> convertEventsToSessions(e.getKey(), e.getValue(), fileParser.getLastTime()));
     }
 
-    private static Stream<SessionWithUsername> convertEventsToSessions(String username, List<Event> events, Instant fileClose) {
+    private static Stream<SessionWithUsername> convertEventsToSessions(String username, List<Event> events, ZonedDateTime fileClose) {
         Stream.Builder<SessionWithUsername> stream = Stream.builder();
         for (PeekingIterator<Event> iter = Iterators.peekingIterator(events.iterator()); iter.hasNext();) {
             Event start = iter.next();

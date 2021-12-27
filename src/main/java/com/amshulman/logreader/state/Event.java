@@ -1,12 +1,12 @@
 package com.amshulman.logreader.state;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 
 import lombok.Value;
 
 @Value
 public final class Event {
-    Instant time;
+    ZonedDateTime time;
     IpAddress ipAddress;
     EventType type;
 
