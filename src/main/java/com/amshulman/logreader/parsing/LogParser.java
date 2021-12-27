@@ -87,6 +87,12 @@ public final class LogParser {
             }
 
             Event end = iter.next();
+            while (iter.hasNext() && iter.peek().getType() == EventType.LOGOUT) {
+                if (DEBUG) {
+                  System.err.println("Ignored duplicate LOGOUT event for " + username + " at " + iter.peek().getTime());
+                }
+                iter.next();
+            }
             stream.accept(new SessionWithUsername(username, new Session(start, end)));
         }
 
