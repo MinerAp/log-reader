@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,16 +47,14 @@ public final class LogParser {
     }
 
     private static Stream<SessionWithUsername> processLinesInOrder(Path path) {
-        InstantAccumulator lastInstant = new InstantAccumulator();
+        FileParser fileParser = new FileParser();
         return FileUtil.lines(path)
-                       .peek(s -> lastInstant.add(FileParser.getDateTime(s)))
-                       .flatMap(FileParser::parseLine)
-                       .parallel()
+                       .flatMap(l -> fileParser.parseLine(l))
                        .collect(Collectors.groupingBy(EventWithUsername::getUsername,
                                                       Collectors.mapping(EventWithUsername::getEvent, Collectors.toList())))
                        .entrySet()
                        .parallelStream()
-                       .flatMap(e -> convertEventsToSessions(e.getKey(), e.getValue(), lastInstant.get()));
+                       .flatMap(e -> convertEventsToSessions(e.getKey(), e.getValue(), fileParser.getLastInstant()));
     }
 
     private static Stream<SessionWithUsername> convertEventsToSessions(String username, List<Event> events, Instant fileClose) {
@@ -94,21 +91,5 @@ public final class LogParser {
         }
 
         return stream.build();
-    }
-
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    private static final class InstantAccumulator {
-
-        Instant last = Instant.EPOCH;
-
-        public Instant get() {
-            return last;
-        }
-
-        public void add(Optional<Instant> instant) {
-            if (instant.isPresent() && instant.get().isAfter(last)) {
-                last = instant.get();
-            }
-        }
     }
 }
