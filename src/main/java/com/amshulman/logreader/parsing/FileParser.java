@@ -41,7 +41,7 @@ public final class FileParser {
 
     static Pattern LOGIN_PATTERN = Pattern.compile("^" +
             DATETIME + " " + INFO + " " +
-            capturing(USERNAME) + "\\[/" + capturing(IPADDRESS) + PORT + "\\]" +
+            capturing(USERNAME) + " ?\\[/" + capturing(IPADDRESS) + PORT + "\\]" +
             ".*$");
 
     static Pattern FAILED_CONNECT_PATTERN = Pattern.compile("^" +
