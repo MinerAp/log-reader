@@ -50,8 +50,8 @@ public final class LogParser {
     private static Stream<SessionWithUsername> processLinesInOrder(Path path) {
         InstantAccumulator lastInstant = new InstantAccumulator();
         return FileUtil.lines(path)
-                       .peek(s -> lastInstant.add(Regex.getDateTime(s)))
-                       .flatMap(Regex::parseLine)
+                       .peek(s -> lastInstant.add(FileParser.getDateTime(s)))
+                       .flatMap(FileParser::parseLine)
                        .parallel()
                        .collect(Collectors.groupingBy(EventWithUsername::getUsername,
                                                       Collectors.mapping(EventWithUsername::getEvent, Collectors.toList())))

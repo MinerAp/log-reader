@@ -17,7 +17,7 @@ import com.amshulman.logreader.state.Event.EventWithUsername;
 import com.amshulman.logreader.state.IpAddress;
 
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public final class Regex {
+public final class FileParser {
     static DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                                                        .withZone(ZoneId.systemDefault());
 
