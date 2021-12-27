@@ -5,21 +5,21 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import org.javatuples.Pair;
 
 import com.amshulman.logreader.parsing.LogParser;
 import com.amshulman.logreader.state.Session;
 import com.amshulman.logreader.stats.AltChecker;
-import com.amshulman.logreader.stats.Playtime;
 import com.amshulman.logreader.stats.IpAddressCounter;
+import com.amshulman.logreader.stats.Playtime;
 import com.amshulman.logreader.util.Util;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.google.common.collect.ListMultimap;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public final class Main {
 
@@ -91,7 +91,7 @@ public final class Main {
 
         public static Parameters parse(String[] args) {
             Parameters params = new Parameters();
-            new JCommander(params, args);
+            new JCommander(params).parse(args);
             return params;
         }
 
